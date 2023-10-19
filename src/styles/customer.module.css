@@ -1,0 +1,9 @@
+#root{
+  --size: 50px;
+}
+.customer {
+  width: var(--size);
+  height: var(--size);
+  border: 1 px solid white;
+  border-radius: 100%;
+}
