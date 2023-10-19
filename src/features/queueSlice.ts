@@ -20,7 +20,6 @@ const initialState: QueueState[] = [
   { customers: [] },
   { customers: [] },
 ]
-
 export const queueSlice = createSlice({
   name: 'queues',
   initialState,
@@ -31,19 +30,24 @@ export const queueSlice = createSlice({
       const queues = [...state];
       const index = findSmallestQueue(queues);
       const curr = state[index];
-      state[index] = { customers: [...curr.customers, { id: '1', items: new Array(items).fill(0)}]}
-      // find queue with the least number of items
-      // add
-      // start removing n items every second
+      state[index] = { customers: [...curr.customers, { id: '1', items: new Array(items).fill(0) }] }
     },
-    // removeCustomerFromQueue: (state, action) => {
-    //   const { payload } = action.payload;
-    //   // 
-    // },
-    // removeItemFromCustomer: (state) => {
+    removeItemFromQueue: (state) => {
+      const _state = [...state];
+      state = _state.map(q => {
+        const queue = q;
+        const customers = q.customers.map(c => {
+          const _customer = { ...c };
+          _customer.items.pop();
 
-    // },
-
+          return _customer
+        });
+        queue.customers = customers;
+        return queue
+      })
+      state = _state;
+    },
+    
   },
 })
 
@@ -75,21 +79,10 @@ function findSmallestQueue(queues: QueueState[]): number {
       }
     }
   }
-  
+
   return index;
 }
 
-// function removeLastItemFromList<T>(items: T[]) {
-//   return items.slice(0, items.length - 1);
-// }
-
-// export const incrementAsync = (amount) => (dispatch) => {
-//   setTimeout(() => {
-//     dispatch(incrementByAmount(amount))
-//   }, 1000)
-// }
-
-// Action creators are generated for each case reducer function
-export const { addCustomerToQueue } = queueSlice.actions
+export const { addCustomerToQueue, removeItemFromQueue } = queueSlice.actions
 
 export default queueSlice.reducer

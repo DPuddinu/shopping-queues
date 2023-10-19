@@ -8,13 +8,16 @@ import { RootState } from './store/store';
 function App() {
   const dispatch = useDispatch();
   const queues = useSelector((state: RootState) => state.queues);
-
+  const onSubmit = (num: number) => {
+    const interval = setInterval(() => dispatch(addCustomerToQueue(num)), 1000);
+    
+  };
   return (
     <div className='flex center flex-col gap-sm'>
-      <QueueInput onSubmit={(num: number) => dispatch(addCustomerToQueue(num))}></QueueInput>
+      <QueueInput onSubmit={onSubmit}></QueueInput>
       <QueueList data={queues}></QueueList>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
