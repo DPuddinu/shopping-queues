@@ -1,12 +1,10 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-export interface Items<T> {
-  items: T[];
-}
 
-export interface Customer extends Items<number> {
+
+export interface Customer {
   id: string;
+  items: number;
 }
 
 export interface QueueState {
@@ -14,9 +12,9 @@ export interface QueueState {
 }
 
 const initialState: QueueState[] = [
-  { customers: [{ id: '1', items: [1, 2, 3, 4] }, { id: '1', items: [1, 2, 3, 4] }] },
-  { customers: [{ id: '1', items: [1, 2, 3] }] },
-  { customers: [{ id: '1', items: [1, 2, 3, 4] }, { id: '1', items: [1, 2, 3, 4, 5, 6] }, { id: '1', items: [1, 2, 3, 4] }, { id: '1', items: [1, 2, 3, 4, 5, 6, 7] }] },
+  { customers: [{ id: '1', items: 1 }, { id: '1', items: 2 }] },
+  { customers: [{ id: '1', items: 3 }] },
+  { customers: [{ id: '1', items: 2 }, { id: '1', items: 2 }, { id: '1', items: 2 }, { id: '1', items: 1 }] },
   { customers: [] },
   { customers: [] },
 ]
@@ -30,24 +28,21 @@ export const queueSlice = createSlice({
       const queues = [...state];
       const index = findSmallestQueue(queues);
       const curr = state[index];
-      state[index] = { customers: [...curr.customers, { id: '1', items: new Array(items).fill(0) }] }
+      state[index] = { customers: [...curr.customers, { id: '1', items: items }] }
     },
     removeItemFromQueue: (state) => {
-      const _state = [...state];
-      state = _state.map(q => {
-        const queue = q;
-        const customers = q.customers.map(c => {
-          const _customer = { ...c };
-          _customer.items.pop();
 
-          return _customer
-        });
-        queue.customers = customers;
-        return queue
+      state = state.map(q => {
+        q.customers = q.customers.map((c, i) => {
+          if (i !== 0) return c;
+          if (c.items > 0) {
+            c.items--;
+          }
+          return c
+        }).filter(c => c.items > 0);
+        return q
       })
-      state = _state;
     },
-    
   },
 })
 
@@ -64,7 +59,7 @@ function findSmallestQueue(queues: QueueState[]): number {
       break;
     }
     q.customers.forEach(customer => {
-      sum += customer.items.length
+      sum += customer.items
     });
     if (sum === 0) {
       index = i;
@@ -82,7 +77,7 @@ function findSmallestQueue(queues: QueueState[]): number {
 
   return index;
 }
-
+export const emptyQueue = (state: QueueState[]) => state.every(queue => queue.customers.length === 0);
 export const { addCustomerToQueue, removeItemFromQueue } = queueSlice.actions
 
 export default queueSlice.reducer

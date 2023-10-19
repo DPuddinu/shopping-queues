@@ -14,7 +14,7 @@ const Queue = ({ data, number }: props) => {
         <div className='flex center gap-sm flex-col p-2'>
           {data.customers.map((customer) => (
             <div className={customerStyles.customer} key={Math.random() * 1000}>
-              {customer.items.length}
+              {customer.items}
             </div>
           ))}
         </div>

@@ -1,20 +1,45 @@
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
 import QueueInput from './components/QueueInput';
 import QueueList from './components/QueueList';
-import { addCustomerToQueue } from './features/queueSlice';
+import { addCustomerToQueue, emptyQueue, removeItemFromQueue } from './features/queueSlice';
 import { RootState } from './store/store';
+
+const TIMEOUT = 1000;
 
 function App() {
   const dispatch = useDispatch();
   const queues = useSelector((state: RootState) => state.queues);
-  const onSubmit = (num: number) => {
-    const interval = setInterval(() => dispatch(addCustomerToQueue(num)), 1000);
-    
-  };
+  const [start, setStart] = useState<boolean>(false);
+  const isQueueEmpty = useSelector((state: RootState) => emptyQueue(state.queues));
+
+  useEffect(() => {
+    let interval = -1;
+    if (start) {
+      interval = setInterval(() => {
+        dispatch(removeItemFromQueue());
+        console.log('asdf');
+      }, TIMEOUT);
+    }
+    if (isQueueEmpty) {
+      clearInterval(interval);
+      setStart(false);
+    }
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [start, isQueueEmpty]);
+
   return (
     <div className='flex center flex-col gap-sm'>
-      <QueueInput onSubmit={onSubmit}></QueueInput>
+      <QueueInput
+        onSubmit={(x) => {
+          dispatch(addCustomerToQueue(x));
+          setStart(true);
+        }}
+      />
       <QueueList data={queues}></QueueList>
     </div>
   );
