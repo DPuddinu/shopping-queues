@@ -19,7 +19,6 @@ function App() {
     if (start) {
       interval = setInterval(() => {
         dispatch(removeItemFromQueue());
-        console.log('asdf');
       }, TIMEOUT);
     }
     if (isQueueEmpty) {
