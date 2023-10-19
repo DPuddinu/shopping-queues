@@ -14,9 +14,11 @@ export interface QueueState {
 }
 
 const initialState: QueueState[] = [
-  { customers: [{ id: '1', items: [1, 2, 3, 4] }, { id: '1', items: [1, 2, 3, 4] }]},
-  { customers: [{ id: '1', items: [1, 2, 3, 4] }] },
-  { customers: [{ id: '1', items: [1, 2, 3, 4] }, { id: '1', items: [1, 2, 3, 4, 5, 6] }, { id: '1', items: [1, 2, 3, 4] }, { id: '1', items: [1, 2, 3, 4, 5, 6, 7] }] }
+  { customers: [{ id: '1', items: [1, 2, 3, 4] }, { id: '1', items: [1, 2, 3, 4] }] },
+  { customers: [{ id: '1', items: [1, 2, 3] }] },
+  { customers: [{ id: '1', items: [1, 2, 3, 4] }, { id: '1', items: [1, 2, 3, 4, 5, 6] }, { id: '1', items: [1, 2, 3, 4] }, { id: '1', items: [1, 2, 3, 4, 5, 6, 7] }] },
+  { customers: [] },
+  { customers: [] },
 ]
 
 export const queueSlice = createSlice({
@@ -24,10 +26,11 @@ export const queueSlice = createSlice({
   initialState,
   reducers: {
     addCustomerToQueue: (state, action) => {
-      const customer: Customer = action.payload;
-      const { payload } = action.payload;
-      console.log(customer);
-      console.log(payload);
+      // const items: number = action.payload;
+
+      const queues = [...state];
+      const smallestQueueIndex = findSmallestQueue(queues);
+      console.log(smallestQueueIndex);
 
       // find queue with the least number of items
       // add
@@ -44,11 +47,31 @@ export const queueSlice = createSlice({
   },
 })
 
-// function findSmallestQueue(arr: QueueState): number {
-//   const index = 0;
-
-//   return index;
-// }
+function findSmallestQueue(queues: QueueState[]): number {
+  let index = 0;
+  let min = 0;
+  queues.forEach((q, i) => {
+    if(q.customers.length === 0) {
+      index = i;
+      return;
+    }
+    let sum = 0;
+    q.customers.forEach(customer => {
+      sum += customer.items.length
+    });
+    if(sum === 0) return i;
+    if(i === 0){
+      min = sum;
+    } else {
+      if(sum < min){
+        min = sum;
+        index = i;
+      }
+    }
+  })
+  
+  return index;
+}
 
 // function removeLastItemFromList<T>(items: T[]) {
 //   return items.slice(0, items.length - 1);

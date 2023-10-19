@@ -8,7 +8,9 @@
 .flex {
   display: flex;
 }
-
+.flex-col {
+  flex-direction: column;
+}
 .center {
   justify-content: center;
   align-items: center;
@@ -16,4 +18,8 @@
 
 .gap-sm {
   gap: 0.5rem;
+}
+
+.p-2 {
+  padding: 0.5rem;
 }
