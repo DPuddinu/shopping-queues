@@ -26,12 +26,12 @@ export const queueSlice = createSlice({
   initialState,
   reducers: {
     addCustomerToQueue: (state, action) => {
-      // const items: number = action.payload;
+      const items: number = action.payload;
 
       const queues = [...state];
-      const smallestQueueIndex = findSmallestQueue(queues);
-      console.log(smallestQueueIndex);
-
+      const index = findSmallestQueue(queues);
+      const curr = state[index];
+      state[index] = { customers: [...curr.customers, { id: '1', items: new Array(items).fill(0)}]}
       // find queue with the least number of items
       // add
       // start removing n items every second
@@ -50,25 +50,31 @@ export const queueSlice = createSlice({
 function findSmallestQueue(queues: QueueState[]): number {
   let index = 0;
   let min = 0;
-  queues.forEach((q, i) => {
-    if(q.customers.length === 0) {
-      index = i;
-      return;
-    }
+
+  for (let i = 0; i < queues.length; i++) {
+    const q = queues[i];
     let sum = 0;
+
+    if (q.customers.length === 0) {
+      index = i;
+      break;
+    }
     q.customers.forEach(customer => {
       sum += customer.items.length
     });
-    if(sum === 0) return i;
-    if(i === 0){
+    if (sum === 0) {
+      index = i;
+      break;
+    }
+    if (i === 0) {
       min = sum;
     } else {
-      if(sum < min){
+      if (sum < min) {
         min = sum;
         index = i;
       }
     }
-  })
+  }
   
   return index;
 }
