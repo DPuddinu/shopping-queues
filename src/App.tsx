@@ -32,7 +32,7 @@ function App() {
   }, [start, isQueueEmpty]);
 
   return (
-    <div className='flex center flex-col gap-sm'>
+    <div className='flex center flex-col gap-sm h-full'>
       <QueueInput
         onSubmit={(x) => {
           dispatch(addCustomerToQueue(x));

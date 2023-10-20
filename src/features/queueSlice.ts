@@ -12,8 +12,8 @@ export interface QueueState {
 }
 
 const initialState: QueueState[] = [
-  { customers: [{ id: '1', items: 1 }, { id: '1', items: 2 }] },
-  { customers: [{ id: '1', items: 3 }] },
+  { customers: [{ id: '1', items: 5 }, { id: '1', items: 2 }] },
+  { customers: [{ id: '1', items: 7 }] },
   { customers: [{ id: '1', items: 2 }, { id: '1', items: 2 }, { id: '1', items: 2 }, { id: '1', items: 1 }] },
   { customers: [] },
   { customers: [] },
@@ -34,8 +34,7 @@ export const queueSlice = createSlice({
 
       state = state.map(q => {
         q.customers = q.customers.map((c, i) => {
-          if (i !== 0) return c;
-          if (c.items > 0) {
+          if (i === 0 && c.items > 0) {
             c.items--;
           }
           return c
